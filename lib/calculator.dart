@@ -73,52 +73,66 @@ class _CalculatorState extends State<Calculator> {
   }
 
   void onButtonPressed(String value) {
-    setState(() {
-      switch (value) {
-        case 'C':
+    switch (value) {
+      case 'C':
+        setState(() {
           display = "0";
           history = "";
-          logic.reset();
           isNewInput = true;
-          break;
+        });
+        logic.reset();
+        break;
 
-        case '⌫':
+      case '⌫':
+        setState(() {
           if (display.length > 1) {
             display = display.substring(0, display.length - 1);
           } else {
             display = "0";
           }
-          break;
+        });
+        break;
 
-        case '+':
-        case '-':
-        case '×':
-        case '÷':
-          if (!isNewInput) {
+      case '+':
+      case '-':
+      case '×':
+      case '÷':
+        if (!isNewInput) {
+          setState(() {
             display = logic.calculate(display); // 計算結果を取得
-          }
-          logic.setFirstValue(display);
-          logic.setOperation(value);
+          });
+        }
+        logic.setFirstValue(display);
+        logic.setOperation(value);
+        setState(() {
           history = "$display $value";
           isNewInput = true;
-          break;
+        });
+        break;
 
-        case '=':
-          if (!isNewInput) {
+      case '=':
+        if (!isNewInput) {
+          setState(() {
             history = "$history $display =";
             display = logic.calculate(display); // 計算結果を取得
-          }
-          logic.reset();
+          });
+        }
+        logic.reset();
+        setState(() {
           isNewInput = true;
-          break;
+        });
+        break;
 
-        case '.':
+      case '.':
+        setState(() {
           if (!display.contains('.')) {
             display += '.';
           }
-          break;
+        });
+        break;
 
-        case '+/-':
+      case '+/-':
+        setState(() {
           if (display != '0') {
             if (display.startsWith('-')) {
               display = display.substring(1);
@@ -126,25 +140,29 @@ class _CalculatorState extends State<Calculator> {
               display = '-$display';
             }
           }
-          break;
+        });
+        break;
 
-        case '%':
+      case '%':
+        setState(() {
           double currentValue = double.tryParse(display) ?? 0.0;
           display = (currentValue / 100).toString();
           isNewInput = true;
-          break;
+        });
+        break;
 
-        default:
-          if ('0123456789'.contains(value)) {
+      default:
+        if ('0123456789'.contains(value)) {
+          setState(() {
             if (isNewInput || display == "0") {
               display = value;
               isNewInput = false;
             } else {
               display += value;
             }
-          }
-          break;
-      }
-    });
+          });
+        }
+        break;
+    }
   }
 }
